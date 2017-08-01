@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#c25e0f"
     tools:context="ritvikkhanna.batterymanager.MainActivity">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:background="#8b3100"
+        android:text="Eride Battery Manager"
+        android:textAlignment="center"
+        android:padding="25dp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:textSize="30dp"
+        />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -13,6 +25,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="246dp" />
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>
