@@ -6,28 +6,39 @@
     android:layout_height="match_parent"
     android:background="#c25e0f"
     tools:context="ritvikkhanna.batterymanager.MainActivity">
-
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="90dp"
         android:background="#8b3100"
-        android:text="Eride Battery Manager"
-        android:textAlignment="center"
-        android:padding="25dp"
-        android:textStyle="bold"
-        android:textColor="#000000"
-        android:textSize="30dp"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Welcome to battery mananger !"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="90dp"
+        android:id="@+id/layout_1"
+        android:padding="25dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Eride Battery Manager"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:textSize="30dp"
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/layout_2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="246dp" />
+        android:layout_alignParentStart="true">
+            <android.support.design.widget.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="18dp"
+                android:id="@+id/fab_add"
+                app:backgroundTint="#8b3100"
+                android:layout_gravity="center_horizontal|bottom"
+                android:src="@drawable/fab_add1"
+                android:layout_marginBottom="23dp" />
+    </RelativeLayout>
 
 </RelativeLayout>
