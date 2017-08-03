@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.IgnoreExtraProperties;
 
 public class MainActivity extends AppCompatActivity {
     FloatingActionButton fab_add;
@@ -32,60 +31,38 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this,R.style.MyDialogTheme);
         alertDialog.setTitle("Add Member");
         alertDialog.setMessage("Enter Name");
-        final EditText edittext_members = new EditText(MainActivity.this);
-        edittext_members.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
-        alertDialog.setView(edittext_members);
+        final EditText et_members = new EditText(MainActivity.this);
+        et_members.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+        alertDialog.setView(et_members);
         alertDialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                String new_member = edittext_members.getText().toString();
-                final Person person = new Person(new_member,"0");
-                //Adding values
-                Toast.makeText(getApplicationContext(), person.name , Toast.LENGTH_SHORT).show();
-                final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-                rootRef.child("members").setValue(person);
-//                addFirebase(new_member);
+                String new_member = et_members.getText().toString();
+                Member member= new Member(new_member, "10");
+                try {
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef = database.getReference();
+                    DatabaseReference childRef = myRef.child("members").push();
+                    childRef.setValue(member);
+                }
+                catch(Exception e){
+                    Toast.makeText(getApplicationContext(), e.toString() , Toast.LENGTH_SHORT).show();
+                }
+                Toast.makeText(getApplicationContext(), member.battery , Toast.LENGTH_SHORT).show();
             }
         });
         alertDialog.setNegativeButton("Cancel", null);
         AlertDialog dialog = alertDialog.create();
         dialog.show();
     }
+    public static class Member{
+        String name;
+        String battery;
+        public Member(){
 
-    void addFirebase(final String name){
-        final Person person = new Person(name,"0");
-        //Adding values
-        Toast.makeText(getApplicationContext(), person.name , Toast.LENGTH_SHORT).show();
-        final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-        rootRef.child("members").setValue(person);
-//        final DatabaseReference memberRef= rootRef.child("member");
-//        memberRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                Toast.makeText(getApplicationContext(), person.name , Toast.LENGTH_SHORT).show();
-//                memberRef.setValue(person);
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-    }
-    @IgnoreExtraProperties
-    public class Person {
-
-        public String name;
-        public String battery;
-
-        // Default constructor required for calls to
-        // DataSnapshot.getValue(User.class)
-
-
-        public Person(String name, String battery) {
-            this.name = name;
-            this.battery = battery;
+        }
+        public Member(String name, String battery){
+            this.name=name;
+            this.battery=battery;
         }
     }
-
 }
