@@ -25,8 +25,12 @@ public class MainActivity extends AppCompatActivity {
                 addMembers();
             }
         });
-    }
 
+
+
+
+    }
+    //floating action button onClick calls this function
     void addMembers(){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this,R.style.MyDialogTheme);
         alertDialog.setTitle("Add Member");
