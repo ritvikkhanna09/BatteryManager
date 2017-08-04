@@ -38,15 +38,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int whichButton) {
                 String new_member = et_members.getText().toString();
                 Member member= new Member(new_member, "10");
-                try {
+
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference myRef = database.getReference();
                     DatabaseReference childRef = myRef.child("members").push();
                     childRef.setValue(member);
-                }
-                catch(Exception e){
+
+
                     Toast.makeText(getApplicationContext(), e.toString() , Toast.LENGTH_SHORT).show();
-                }
+                
                 Toast.makeText(getApplicationContext(), member.battery , Toast.LENGTH_SHORT).show();
             }
         });
