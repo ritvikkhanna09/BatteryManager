@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -45,32 +46,44 @@ public class MainActivity extends AppCompatActivity {
                 addMembers();
             }
         });
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                changeBattery();
+            }
+        });
     }
-    private void displayData(){
+
+
+    void changeBattery(){
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference();
-        try {
-            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    names.clear();
-                    for (DataSnapshot data : dataSnapshot.getChildren()) {
-                        Member m = new Member(data.getValue(Member.class).name, data.getValue(Member.class).battery);
-                        names.add(m.name);
-                    }
-                    ArrayAdapter adapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, names);
-                    lv.setAdapter(adapter);
-                }
+        final DatabaseReference childRef = myRef.child("members").push();
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this,R.style.MyDialogTheme);
+        alertDialog.setTitle("Add Member");
+        alertDialog.setMessage("Enter Name");
+        final EditText et_members = new EditText(MainActivity.this);
+        et_members.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+        alertDialog.setView(et_members);
+        alertDialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String new_member = et_members.getText().toString();
+                Member member= new Member(new_member, "10");
+                try {
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
+                    childRef.setValue(member);
                 }
-            });
-        }catch (Exception ae){
-            Toast.makeText(getApplicationContext(), ae.toString(), Toast.LENGTH_SHORT).show();
-        }
+                catch(Exception e){
+                    Toast.makeText(getApplicationContext(), e.toString() , Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        alertDialog.setNegativeButton("Cancel", null);
+        AlertDialog dialog = alertDialog.create();
+        dialog.show();
     }
+
     //floating action button onClick calls this function
     void addMembers(){
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -153,6 +166,32 @@ public class MainActivity extends AppCompatActivity {
         public Member(String name, String battery){
             this.name=name;
             this.battery=battery;
+        }
+    }
+    //Extra 
+    private void displayData(){
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = database.getReference();
+        try {
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    names.clear();
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                        Member m = new Member(data.getValue(Member.class).name, data.getValue(Member.class).battery);
+                        names.add(m.name);
+                    }
+                    ArrayAdapter adapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, names);
+                    lv.setAdapter(adapter);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }catch (Exception ae){
+            Toast.makeText(getApplicationContext(), ae.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 }
