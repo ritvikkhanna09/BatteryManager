@@ -22,9 +22,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    FloatingActionButton fab_add;
+    FloatingActionButton fab_add,fab_show;
     ListView lv;
-    public ArrayList<String> names=new ArrayList<String>();
+    public ArrayList<String> names=new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +32,14 @@ public class MainActivity extends AppCompatActivity {
         lv=(ListView) findViewById(R.id.lv);
         //this.displayData();
         this.retreiveData();
+        fab_show = (FloatingActionButton)findViewById(R.id.fab_showdd);
         fab_add = (FloatingActionButton)findViewById(R.id.fab_add);
+        fab_show.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         fab_add.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 addMembers();
@@ -86,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
                 catch(Exception e){
                     Toast.makeText(getApplicationContext(), e.toString() , Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(getApplicationContext(), member.battery , Toast.LENGTH_SHORT).show();
             }
         });
         alertDialog.setNegativeButton("Cancel", null);
@@ -94,9 +100,9 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void retreiveData(){
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference();
+    void retreiveData(){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference();
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -125,18 +131,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void getUpdates(DataSnapshot ds){
-        names.clear();
-        for (DataSnapshot data : ds.getChildren()){
-            Member m=new Member(data.getValue(Member.class).name,data.getValue(Member.class).battery);
-            names.add(m.name);
+    void getUpdates(DataSnapshot ds){
+        //names.clear();
+        for (DataSnapshot data : ds.getChildren()) {
+            Member m = new Member(data.getValue(Member.class).name, data.getValue(Member.class).battery);
+            if(!names.contains(m.name)){
+            names.add(m.name);}
         }
-        try{
-            ArrayAdapter adapter=new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1,names);
-            lv.setAdapter(adapter);}
-        catch (Exception ae){
-            Toast.makeText(getApplicationContext(), ae.toString(), Toast.LENGTH_SHORT).show();
-        }
+        ArrayAdapter adapter=new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1,names);
+        lv.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
     }
 
