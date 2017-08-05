@@ -9,7 +9,6 @@ import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,13 +28,15 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton fab_add,fab_show;
     ListView lv;
     public ArrayList<String> names=new ArrayList<>();
+    public ArrayList<String> batterys=new ArrayList<>();
+    ListViewAdapter lviewAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lv=(ListView) findViewById(R.id.lv);
-        //this.displayData();
-        this.retreiveData();
+        retreiveData();
         fab_show = (FloatingActionButton)findViewById(R.id.fab_showdd);
         fab_add = (FloatingActionButton)findViewById(R.id.fab_add);
         fab_show.setOnClickListener(new View.OnClickListener() {
@@ -52,15 +53,16 @@ public class MainActivity extends AppCompatActivity {
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
+
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Object o = lv.getItemAtPosition(i);
-                String str=(String)o;
-                String[] parts = str.split("-------------->");
-                String name = parts[0];
-                String battery = parts[1];
-                //changeBattery(name,battery);
-                showChangeLangDialog(name,battery);
-                Toast.makeText(getApplicationContext(), name+","+battery , Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this,"Title => "+ names.get(i) +"=> n Description"+ batterys.get(i), Toast.LENGTH_SHORT).show();
+                showChangeLangDialog(names.get(i), batterys.get(i));
+//                try {
+//                    Object o = lv.getItemAtPosition(i);
+//                    String str = (String) o;
+//                    showChangeLangDialog(name, battery);
+//                    Toast.makeText(getApplicationContext(), name + "," + battery, Toast.LENGTH_SHORT).show();
+//                }catch (Exception ae){Toast.makeText(getApplicationContext(), ae.toString(), Toast.LENGTH_SHORT).show();}
             }
         });
     }
@@ -192,28 +194,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void getUpdates(DataSnapshot ds){
+        names.clear();
+        batterys.clear();
         for (DataSnapshot data : ds.getChildren()) {
             Member m = new Member(data.getValue(Member.class).name, data.getValue(Member.class).battery);
-            if(!names.contains(m.dis)){
-            names.add(m.dis);}
+            names.add(m.name);
+            batterys.add(m.battery);
+
         }
-        ArrayAdapter adapter=new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1,names);
-        lv.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-//        names.clear();
+        for (int i = 0; i<batterys.size(); i++){
+            Toast.makeText(MainActivity.this,batterys.get(i),Toast.LENGTH_SHORT).show();
+        }
+        lviewAdapter = new ListViewAdapter(MainActivity.this, names, batterys);
+        lv.setAdapter(lviewAdapter);
     }
 
     public static class Member{
         String name;
         String battery;
-        String dis;
         public Member(){
 
         }
         public Member(String name, String battery){
             this.name=name;
             this.battery=battery;
-            this.dis=name+"-------------->"+battery;
         }
     }
 }
