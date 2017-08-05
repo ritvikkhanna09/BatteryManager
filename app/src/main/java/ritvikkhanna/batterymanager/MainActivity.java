@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+    public boolean flag=false;
     FloatingActionButton fab_add,fab_show;
     ListView lv;
     public ArrayList<String> names=new ArrayList<>();
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int whichButton) {
                 //do something with edt.getText().toString();
                 String a = edt.getText().toString();
-                //updateBattery(name,a);
+                updateBattery(name,a);
             }
         });
         dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -111,15 +112,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     //updating battery
-    void updateBattery(String name,String battery){
+    void updateBattery(final String name, final String battery){
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference();
-        final DatabaseReference childRef = myRef.child("members");
-
-        childRef.orderByChild("name").equalTo(name).addListenerForSingleValueEvent(new ValueEventListener() {
+        final DatabaseReference myRef = database.getReference("members");
+        myRef.orderByChild("name").equalTo(name).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
+                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                    snapshot.getRef().child("battery").setValue(battery);
+                }
             }
 
             @Override
@@ -187,20 +188,19 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     void getUpdates(DataSnapshot ds){
-        //names.clear();
         for (DataSnapshot data : ds.getChildren()) {
             Member m = new Member(data.getValue(Member.class).name, data.getValue(Member.class).battery);
-
             if(!names.contains(m.dis)){
             names.add(m.dis);}
         }
         ArrayAdapter adapter=new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1,names);
         lv.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-
+//        names.clear();
     }
 
     public static class Member{
@@ -214,32 +214,6 @@ public class MainActivity extends AppCompatActivity {
             this.name=name;
             this.battery=battery;
             this.dis=name+"-------------->"+battery;
-        }
-    }
-    //Extra
-    private void displayData(){
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference();
-        try {
-            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    names.clear();
-                    for (DataSnapshot data : dataSnapshot.getChildren()) {
-                        Member m = new Member(data.getValue(Member.class).name, data.getValue(Member.class).battery);
-                        names.add(m.name);
-                    }
-                    ArrayAdapter adapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, names);
-                    lv.setAdapter(adapter);
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }catch (Exception ae){
-            Toast.makeText(getApplicationContext(), ae.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 }
