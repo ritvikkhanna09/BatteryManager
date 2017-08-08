@@ -30,16 +30,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true">
-            <android.support.design.widget.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/fab_showdd"
-                android:layout_below="@+id/lv"
-                app:backgroundTint="#8b3100"
-                android:layout_gravity="center_horizontal|bottom"
-                android:src="@drawable/fab_show"
-                android:layout_marginLeft="10dp"
-                android:layout_marginBottom="0dp"/>
+
             <ListView
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/lv"

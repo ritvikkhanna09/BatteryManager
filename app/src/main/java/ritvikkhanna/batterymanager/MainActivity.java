@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     public int flag=0;
-    FloatingActionButton fab_add,fab_show;
+    FloatingActionButton fab_add;
     ListView lv;
     ArrayList<String> names=new ArrayList<>();
     ArrayList<String> batterys=new ArrayList<>();
@@ -41,14 +41,8 @@ public class MainActivity extends AppCompatActivity {
         lv=(ListView) findViewById(R.id.lv);
         flag=0;
         retreiveData();
-        fab_show = (FloatingActionButton)findViewById(R.id.fab_showdd);
         fab_add = (FloatingActionButton)findViewById(R.id.fab_add);
-        fab_show.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-            }
-        });
         fab_add.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 addMembers();
@@ -59,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
 
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(MainActivity.this,"name => "+ names.get(i) +"=> n battery "+ batterys.get(i), Toast.LENGTH_SHORT).show();
                 showChangeLangDialog(names.get(i), batterys.get(i));
 //                try {
 //                    Object o = lv.getItemAtPosition(i);
