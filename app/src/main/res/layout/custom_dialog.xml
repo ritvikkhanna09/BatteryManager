@@ -10,8 +10,8 @@
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/fab_add"
-        android:src="@drawable/fab_add1"
+        android:id="@+id/fab_sub"
+        android:src="@drawable/fab_sub1"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
     <TextView
@@ -24,8 +24,8 @@
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/fab_sub"
-        android:src="@drawable/fab_sub1"
+        android:id="@+id/fab_add"
+        android:src="@drawable/fab_add1"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
 

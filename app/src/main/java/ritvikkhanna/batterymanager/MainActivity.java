@@ -24,18 +24,22 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    public boolean flag=false;
+    public int flag=0;
     FloatingActionButton fab_add,fab_show;
     ListView lv;
-    public ArrayList<String> names=new ArrayList<>();
-    public ArrayList<String> batterys=new ArrayList<>();
+    ArrayList<String> names=new ArrayList<>();
+    ArrayList<String> batterys=new ArrayList<>();
     ListViewAdapter lviewAdapter;
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
+    final DatabaseReference myRef = database.getReference();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         lv=(ListView) findViewById(R.id.lv);
+        flag=0;
         retreiveData();
         fab_show = (FloatingActionButton)findViewById(R.id.fab_showdd);
         fab_add = (FloatingActionButton)findViewById(R.id.fab_add);
@@ -55,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
 
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(MainActivity.this,"Title => "+ names.get(i) +"=> n Description"+ batterys.get(i), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this,"name => "+ names.get(i) +"=> n battery "+ batterys.get(i), Toast.LENGTH_SHORT).show();
                 showChangeLangDialog(names.get(i), batterys.get(i));
 //                try {
 //                    Object o = lv.getItemAtPosition(i);
@@ -114,10 +118,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     //updating battery
-    void updateBattery(final String name, final String battery){
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("members");
-        myRef.orderByChild("name").equalTo(name).addListenerForSingleValueEvent(new ValueEventListener() {
+    public void updateBattery(final String name, final String battery){
+        final DatabaseReference myMem = database.getReference("members");
+        myMem.orderByChild("name").equalTo(name).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
@@ -133,10 +136,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //floating action button onClick calls this function
-    void addMembers(){
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference();
-        final DatabaseReference childRef = myRef.child("members").push();
+    public void addMembers(){
+        final DatabaseReference childRef = myRef.child("members");
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this,R.style.MyDialogTheme);
         alertDialog.setTitle("Add Member");
         alertDialog.setMessage("Enter Name");
@@ -149,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 Member member= new Member(new_member, "10");
                 try {
 
-                    childRef.setValue(member);
+                    childRef.push().setValue(member);
                 }
                 catch(Exception e){
                     Toast.makeText(getApplicationContext(), e.toString() , Toast.LENGTH_SHORT).show();
@@ -161,13 +162,12 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    void retreiveData(){
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference();
+    public void retreiveData(){
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                getUpdates(dataSnapshot);
+                showList(dataSnapshot);
+//                getUpdates(dataSnapshot);
             }
 
             @Override
@@ -193,17 +193,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    void getUpdates(DataSnapshot ds){
+    public void getUpdates(DataSnapshot ds){
         names.clear();
         batterys.clear();
         for (DataSnapshot data : ds.getChildren()) {
             Member m = new Member(data.getValue(Member.class).name, data.getValue(Member.class).battery);
             names.add(m.name);
             batterys.add(m.battery);
-
         }
-        for (int i = 0; i<batterys.size(); i++){
-            Toast.makeText(MainActivity.this,batterys.get(i),Toast.LENGTH_SHORT).show();
+        lviewAdapter = new ListViewAdapter(MainActivity.this, names, batterys);
+        lv.setAdapter(lviewAdapter);
+    }
+    public void showList(DataSnapshot ds){
+        for (DataSnapshot data : ds.getChildren()) {
+            Member m = new Member(data.getValue(Member.class).name, data.getValue(Member.class).battery);
+            names.add(m.name);
+            batterys.add(m.battery);
         }
         lviewAdapter = new ListViewAdapter(MainActivity.this, names, batterys);
         lv.setAdapter(lviewAdapter);
