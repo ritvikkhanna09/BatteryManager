@@ -1,6 +1,6 @@
 # BatteryManager 
 
-### A app to keep track of points/score of a team member
+### A app to keep track of points/score of team members
 
 * The android mobile application is connected firebase
   * The names of the members and their points are stored in json format
